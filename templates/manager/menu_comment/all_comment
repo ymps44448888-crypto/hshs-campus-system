@@ -1,0 +1,124 @@
+<!--status_all.html-->
+
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>所有回饋清單</title>
+<style>
+    body {
+        font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+        padding: 20px;
+        background-color: #f7f9fc;
+    }
+    h2 {
+        color: #5dade2;
+        border-bottom: 2px solid #ebf5fb;
+        padding-bottom: 10px;
+    }
+    .btn-link {
+        display: inline-block;
+        padding: 10px 15px;
+        background-color: #5dade2;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+    .btn-link:hover {
+        background-color: #3498db;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background-color: #f4f8fa;
+        color: #2c3e50;
+        font-weight: bold;
+    }
+    tr:hover {
+        background-color: #f9f9f9;
+    }
+    .stat-card {
+        background-color: #ffffff;
+        padding: 20px 25px;
+        border-radius: 8px;
+        width: 100%;
+        max-width: 1000px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        box-sizing: border-box;
+        border-left: 5px solid #27ae60;
+    }
+
+    .stat-card h3 {
+        margin: 0;
+        color: #2c3e50;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .stat-number {
+        color: #27ae60;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+    <h2>📋 所有午餐回饋列表</h2>
+    <a href="{{ url_for('manager_menu_comment_manager')}}" class="btn-link">⬅️ 返回管理後台</a>
+    <div class="stat-card">
+        <h3>📊 目前累計有 <span class="stat-number">{{ count }}</span> 筆資料</h3>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>編號</th>
+                <th>日期</th>
+                <th>班級</th>
+                <th>廠商</th>
+                <th>菜色</th>
+                <th>意見內容</th>
+                <th>操作</th> </tr>
+        </thead>
+        <tbody>
+            {% for c in all_comments %}
+            <tr>
+                <td>{{ c.id }}</td>
+                <td>{{ c.date }}</td>
+                <td>{{ c.student_class }}</td>
+                <td>{{ c.shop }}</td>
+                <td>{{ c.dish_name }}</td>
+
+                <td>
+                    <div class="comment-content"><p class="comment-text">{{ c.comment }}</p></div>
+                </td>
+
+                <td>
+                    <form action="{{ url_for('manager_menu_comment_delete_comment', comment_id=c.id) }}" method="POST" onsubmit="return confirm('確定刪除？');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button type="submit" class="btn-delete" style="background-color: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">刪除</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; color: #7f8c8d;">目前資料庫裡還沒有任何資料喔！</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
